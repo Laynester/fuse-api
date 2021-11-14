@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AccountDao, MasterDao } from "../../database/daos";
 import { GetFunctions, GetFuse } from '../../api'
+import * as jwt from "jsonwebtoken";
 
 /*
  * Author: Laynester
@@ -10,7 +11,24 @@ export class AuthController
 {
     public static async Login(req: Request, res: Response): Promise<any>
     {
-        let { field, password } = req.params;
+        let { field, password, token } = req.body;
+
+        if (token)
+        {
+            try
+            {
+                var decoded = jwt.verify(token, 'imgay');
+
+                if (!decoded.email) Promise.reject();
+
+                let account = await AccountDao.findAccountByField("email", decoded.email);
+
+                return res.json(await AccountDao.login(account, false));
+            } catch (err)
+            {
+                return res.json({ error: "Unauthenticated" });
+            }
+        }
 
         if (field.includes("@"))
         {

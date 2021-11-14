@@ -50,9 +50,14 @@ export class AccountDao
         return bcrypt.compareSync(password, account.password);
     }
 
-    public static async login(account: AccountEntity)
+    public static async login(account: AccountEntity, token: boolean = true)
     {
-        return { token: this.getToken(account), account: account, habbo: await MasterDao.UserDao().findUserByOwner(account.id) }
+        let data = {};
+
+        if (token) data['token'] = this.getToken(account);
+        data['account'] = account;
+        data['habbo'] = await MasterDao.UserDao().findUserByOwner(account.id)
+        return data;
     }
 
     public static getToken(account: AccountEntity): string
