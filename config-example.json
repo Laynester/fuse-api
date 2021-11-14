@@ -1,0 +1,16 @@
+{
+    "general":{
+        "api_port": 1337,
+        "db_schema": "arcturus",
+        "auth_secret_key": "imgay"
+    },
+    "db":{
+        "type": "mysql",
+        "host": "localhost",
+        "port": 3306,
+        "name": "arcturus",
+        "username": "root",
+        "password": "",
+        "synchronize": true
+    }
+}
