@@ -10,6 +10,8 @@ export class IUserDao
 
     public async createUser(owner_id: number, username: string, mail: string, look: string, gender: string, ip: any): Promise<UserObject> { return };
 
+    public async setActiveUser(id: number): Promise<UserObject> { return };
+
     public async findUserById(id: number): Promise<UserObject> { return };
 
     public async findUserByOwner(owner: number): Promise<UserObject> { return };

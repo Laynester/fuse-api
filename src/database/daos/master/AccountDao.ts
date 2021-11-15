@@ -38,9 +38,11 @@ export class AccountDao
             .getMany();
     }
 
-    public static async findAccountByField(field: string, value: any): Promise<AccountEntity>
+    public static async findAccountByField(field: string, value: any, secure: boolean = true): Promise<AccountEntity>
     {
-        let entity = AccountEntity.createQueryBuilder("account").where(`account.${field}=:value`, { value: value }).getOne();
+        let entity;
+        if (secure) entity = await AccountEntity.createQueryBuilder("account").where(`account.${field}=:value`, { value: value }).getOne();
+        else entity = await AccountEntity.createQueryBuilder("account").where(`account.${field}=:value`, { value: value }).select(["account.id", "account.password", "account.email"]).getOne();
 
         return entity;
     }
@@ -57,6 +59,7 @@ export class AccountDao
         if (token) data['token'] = this.getToken(account);
         data['account'] = account;
         data['habbo'] = await MasterDao.UserDao().findUserByOwner(account.id)
+
         return data;
     }
 

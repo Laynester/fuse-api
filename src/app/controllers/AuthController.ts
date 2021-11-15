@@ -11,7 +11,7 @@ export class AuthController
 {
     public static async Login(req: Request, res: Response): Promise<any>
     {
-        let { field, password, token } = req.body;
+        let { username, password, token } = req.body;
 
         if (token)
         {
@@ -30,19 +30,31 @@ export class AuthController
             }
         }
 
-        if (field.includes("@"))
+        if (username.includes("@"))
         {
-            let account = await AccountDao.findAccountByField("email", field);
+            let account = await AccountDao.findAccountByField("email", username);
 
-            if (!account) return res.json({ "error": "auth_no_account" })
+            if (!account) return res.json({ "error": "no_account" })
 
-            if (!AccountDao.isPassword(password, account)) return res.json({ "error": "auth_invalid_password" })
+            if (!AccountDao.isPassword(password, account)) return res.json({ "error": "invalid_password" })
 
             return res.json(await AccountDao.login(account))
 
         } else
         {
-            let account = MasterDao.UserDao().findUserByUsername(field);
+            let user = await MasterDao.UserDao().findUserByUsername(username);
+
+            if (!user) return res.json({ "error": "no_account" });
+
+            let account = await AccountDao.findAccountByField("id", user.account.id, false)
+
+            if (!account) return res.json({ "error": "no_account" });
+
+            if (!AccountDao.isPassword(password, account)) return res.json({ "error": "invalid_password" })
+
+            await MasterDao.UserDao().setActiveUser(user.id);
+
+            return res.json(await AccountDao.login(account))
         }
     }
 

@@ -2,7 +2,7 @@ import { IUserDao } from "../interfaces";
 import { UserEntity } from "../../entities/arcturus";
 import { UserObject } from "../../objects";
 import moment = require("moment");
-import { AccountDao } from "..";
+import { AccountDao, MasterDao } from "..";
 
 /*
  * Author: Laynester
@@ -32,10 +32,27 @@ export class ArcturusUserDao extends IUserDao
         return new UserObject(user);
     }
 
+    public async setActiveUser(id: number): Promise<UserObject>
+    {
+        let user = await UserEntity.createQueryBuilder("user")
+            .where({ "id": id })
+            .leftJoinAndSelect("user.account", "account")
+            .getOne();
+
+        if (!user) return;
+
+        user.last_login = moment().unix();
+
+        await user.save();
+
+        return new UserObject(user);
+    };
+
     public async findUserById(id: number): Promise<UserObject>
     {
         let entity = await UserEntity.createQueryBuilder("user")
             .where({ "id": id })
+            .orderBy("user.last_login", "DESC")
             .leftJoinAndSelect("user.account", "account")
             .getOne();
 
@@ -87,6 +104,7 @@ export class ArcturusUserDao extends IUserDao
     {
         let entity = await UserEntity.createQueryBuilder("user")
             .where({ "owner_id": owner })
+            .orderBy("user.last_login", "DESC")
             .leftJoinAndSelect("user.account", "account")
             .getMany();
 
