@@ -47,7 +47,7 @@ export class AccountDao
         return entity;
     }
 
-    public static async isPassword(password: string, account: AccountEntity): Promise<boolean>
+    public static isPassword(password: string, account: AccountEntity): Promise<boolean>
     {
         return bcrypt.compareSync(password, account.password);
     }
