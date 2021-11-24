@@ -21,6 +21,7 @@ export class Setup
         await this.insertConfig("figuremap_json", "/nitro/gamedata/json/figuremap.json");
         await this.insertConfig("habbo_imager", "https://www.habbo.com/habbo-imaging/avatarimage?figure=");
         await this.insertConfig("age_limit", "1990-2009");
+        await this.insertConfig("default_avatar", "lg-270-82.hd-180-1.ch-210-66.sh-290-81.hr-100-40");
     }
 
     private async insertConfig(key: string, value: string): Promise<void>

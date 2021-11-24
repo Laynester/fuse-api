@@ -32,27 +32,4 @@ export class UserController
 
         return res.json(returned || { error: "no_response" });
     }
-
-    public static async Gett(req: Request, res: Response): Promise<any>
-    {
-        let { field, value } = req.params;
-
-        if (!field || !value) return res.json({ error: "no_field" });
-
-        let account: UserObject;
-
-        switch (field)
-        {
-            case "username":
-                account = await MasterDao.UserDao().findUserByUsername(value);
-                break;
-            case "email":
-            default:
-                account = await MasterDao.UserDao().findUserByEmail(value)
-        }
-
-        if (!account) return res.json({ error: "no_user" });
-
-        return res.json(account)
-    }
 }

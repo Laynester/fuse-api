@@ -13,6 +13,8 @@ export class AuthController
     {
         let { username, password, token } = req.body;
 
+        if (!username || !password) return res.json({ error: "no fields" });
+
         if (token)
         {
             try
@@ -66,6 +68,8 @@ export class AuthController
             password_confirm,
             birthdate,
             look, gender } = req.body;
+
+        if (!username || !password || !password_confirm || !birthdate || !look || !gender) return res.json({ error: "no fields" })
 
         if (await MasterDao.UserDao().findUserByUsername(username)) return res.json({ error: "username_taken" });
 
